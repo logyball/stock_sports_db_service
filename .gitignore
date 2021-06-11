@@ -1,0 +1,14 @@
+# Intellij
+.idea
+
+# binaries
+*.exe
+
+# secrets
+credentials.yml
+
+# python
+__pycache__
+
+# secrets
+*.secret

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: stonks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  template:
+    metadata:
+      name: mysql
+      labels:
+        app: mysql
+        # TODO - enable prometheus monitoring?
+#      annotations:
+#        prometheus.io/scrape: "true"
+#        prometheus.io/path: /api/health
+#        prometheus.io/port: "3000"
+    spec:
+      containers:
+        - name: mysql
+          image: mysql/mysql-server:8.0.25
+          ports:
+            - name: mysql
+              containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          # TODO - investigate resource limits here
+#          resources:
+#            limits:
+#              cpu: 250m
+#              memory: 250Mi
+#            requests:
+#              cpu: 250m
+#              memory: 250Mi
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-initdb
+          configMap:
+            name: startup
