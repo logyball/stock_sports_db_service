@@ -1,8 +1,7 @@
-
 SET GLOBAL time_zone = '-7:00';
 
-CREATE DATABASE IF NOT EXISTS stonks;
-USE stonks;
+CREATE DATABASE IF NOT EXISTS stocks_sports;
+USE stocks_sports;
 
 CREATE TABLE IF NOT EXISTS stock_prices (
     symbol VARCHAR(10),
@@ -21,9 +20,6 @@ CREATE TABLE IF NOT EXISTS stock_tickers (
 
     PRIMARY KEY (symbol)
 );
-
-CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';
-
 
 /*
     TODO - create users table

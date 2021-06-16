@@ -1,11 +1,54 @@
-# Stocks n Gambling
+# Stocks and Gambling
 
-I'd like to create a way for a user to compare how they would've done historically across picking stocks and picking sports teams.  So I'd like to have a "budget" that users can start with, then the ability to pick from stocks that they can buy (commission-free of course) and compare them with how they would do if they gambled on sports.  In addition, I'd like to create several bot users who:
-- pick stocks/teams randomly
-- pick stocks/teams according to some dumb machine learning model
-- pick stocks/teams based on some novelty model (always bet against the Knicks, or something)
+This is the first part of an ongoing project that I'm working on to evaluate the performance of stocks and sports gambling.   [Check out this post](https://loganballard.com/index.php/2021/06/10/stocks-vs-sports-0-inception/) for the background.  This repository implements the data generation and thin layer retrieval service.
 
-# Technical Components
+![Component Design](./imgs/db-service-design.png "Component Design") 
 
-The first part of this is a backing based on a database.  Because I run this on a kubernetes cluster running on Raspberry Pis, my db choices are limited to those that run on ARM.  So for this I picked MySql 8.0.
+## Constraints
+
+I am deploying on Kubernetes with the ability to run on ARM architecture.  This means that:
+1. Everything must be containerized
+2. All containers must _have the option to be_ ARM-based
+
+## Database
+
+The database is created using MySql due to its great documentation, ability to be used easily in Kubernetes, and general flexibility.  It pretty heavy for what I require, and a relational data model may not be the best approach for a completely additive datastore.
+
+#### Deployment
+
+Deploying the database is easy.  Create the required namespace, then create the database objects.
+
+```shell
+$ kubectl apply -f ops/Namespace.yml
+$ kubectl apply -f ops/db/  # Applies PVC, STS, SVC, Secrets, ConfigMaps
+$ kubectl get all -n stocks-sports
+NAME          READY   STATUS    RESTARTS   AGE
+pod/mysql-0   1/1     Running   0          92s
+
+NAME            TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+service/mysql   ClusterIP   <clust ip>   <none>        3306/TCP   92s
+
+NAME                     READY   AGE
+statefulset.apps/mysql   1/1     92s
+```
+
+Note that the namespace is required for all objects as this will be where our db and scheduled jobs land.
+
+#### Credentials
+
+In order to get credentials, I used a random password generator and then a [sealed secret](https://github.com/bitnami-labs/sealed-secrets).  This will vary for your cluster.  The command is below:
+
+```shell
+$ kubectl create secret generic mysql-credentials --from-literal=root_pass=<secret> --from-literal=admin_pass=<secret> --from-literal=writer_pass=<secret> --from-literal=reader_pass=<secret> -n stocks-sports -o yaml --dry-run=client | kubeseal -o yaml - > ops/db/mysqlCredentials.yml
+```
+
+#### Startup Script
+
+Because one of the startup scripts contains secrets, it also had to be obscured.
+
+```shell
+$ kubectl create secret generic mysql-startup --from-file=./db/users.sql -n stocks-sports -o yaml --dry-run=client | kubeseal -o yaml - > ops/db/startupSecretScript.yml
+```
+
+Of course you'll need to modify the secrets values.
 

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
-  namespace: stonks
+  namespace: stocks-sports
 spec:
   replicas: 1
   selector:
@@ -14,7 +14,7 @@ spec:
       name: mysql
       labels:
         app: mysql
-        # TODO - enable prometheus monitoring?
+        # TODO - enable prometheus monitoring?  Figure out if prom integrates with MySQL easily
 #      annotations:
 #        prometheus.io/scrape: "true"
 #        prometheus.io/path: /api/health
@@ -28,12 +28,19 @@ spec:
               containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: password
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: root_pass
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
             - name: mysql-initdb
-              mountPath: /docker-entrypoint-initdb.d
+              mountPath: /docker-entrypoint-initdb.d/init_db.sql
+              subPath: init_db.sql
+            - name: mysql-init-users
+              mountPath: /docker-entrypoint-initdb.d/users.sql
+              subPath: users.sql
           # TODO - investigate resource limits here
 #          resources:
 #            limits:
@@ -49,3 +56,6 @@ spec:
         - name: mysql-initdb
           configMap:
             name: startup
+        - name: mysql-init-users
+          secret:
+            secretName: mysql-startup

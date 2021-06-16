@@ -12,3 +12,6 @@ __pycache__
 
 # secrets
 *.secret
+
+## real credentials
+db/users.sql

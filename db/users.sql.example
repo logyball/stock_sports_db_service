@@ -1,0 +1,9 @@
+USE stocks_sports;
+
+CREATE USER IF NOT EXISTS stocks_sports_admin IDENTIFIED BY 'admin' PASSWORD EXPIRE NEVER;
+CREATE USER IF NOT EXISTS stocks_sports_reader IDENTIFIED BY 'reader' PASSWORD EXPIRE NEVER;
+CREATE USER IF NOT EXISTS stocks_sports_writer IDENTIFIED BY 'writer' PASSWORD EXPIRE NEVER;
+
+GRANT ALL on *.* TO stocks_sports_admin@'%';
+GRANT SELECT on *.* TO stocks_sports_reader@'%';
+GRANT CREATE, INSERT, SELECT, UPDATE on *.* TO stocks_sports_writer@'%';
