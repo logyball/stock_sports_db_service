@@ -47,14 +47,29 @@ def main():
         logging.info('getting stock tickers')
         ticker_list = get_tickers()
         load_tickers_into_db(connection=connection, ticker_list=ticker_list)
+        logging.info('successfully finished stock ticker population')
+        if args.production:
+            logging.info('Logging to prometheus - successfully populated stock tickers')
+            pass
+            # TODO populate prometheus metric
     if args.back_populate:
         logging.info('running back population')
         symbol_list = get_stock_tickers_from_db(connection=connection)
         historical_stock_data_batch(connection=connection, symbol_list=symbol_list)
+        logging.info('successfully finished back population')
+        if args.production:
+            logging.info('Logging to prometheus - successful back population')
+            pass
+            # TODO populate prometheus metric
     if args.daily:
         logging.info('run daily population')
         symbol_list = get_stock_tickers_from_db(connection=connection)
         yesterdays_stock_data_batch(connection=connection, symbol_list=symbol_list)
+        logging.info('successfully finished daily population')
+        if args.production:
+            logging.info('Logging to prometheus - successfully populated daily batch job')
+            pass
+            # TODO populate prometheus metric
 
 
 if __name__ == '__main__':

@@ -46,8 +46,9 @@ def get_database_connection(verbose: bool = False) -> mysql.connector.MySQLConne
             database=creds.get('db_name'),
             port=creds.get('db_port')
         )
-        if verbose:
-            c.cmd_debug()
+        # if verbose:
+        #     c.cmd_debug()
+        ## TODO - investigate why doesn't show up in docker
         logging.info(f'obtained db connection to {c.database}')
         return c
     except Error as e:

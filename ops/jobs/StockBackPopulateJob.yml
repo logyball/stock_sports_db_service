@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stocks-back-population
+  namespace: stocks-sports
+spec:
+    template:
+      spec:
+        containers:
+          - name: stocks-back-population
+            image: loganballard/stocks-sports-jobs:0.0.1
+            command: ["--verbose", "--tickers", "--back-populate", "--production"]
+            env:
+              - name: DB_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: mysql-credentials
+                    key: admin_pass
+              - name: ALPHA_VANTAGE_API_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: alpha-vantage-api-key
+                    key: key
+              - name: DB_USER
+                value: stocks_sports_admin
+              - name: DB_HOST
+                value: mysql
+              - name: DB_PORT
+                value: "3306"
+              - name: DB_NAME
+                value: stocks_sports
+        restartPolicy: OnFailure
+    backoffLimit: 2
