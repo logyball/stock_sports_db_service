@@ -9,6 +9,7 @@ credentials.yml
 
 # python
 __pycache__
+venv
 
 # secrets
 *.secret

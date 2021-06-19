@@ -1,0 +1,13 @@
+# Documentation things
+imgs
+*.md
+
+# git things
+.git
+
+# python things
+venv
+__pycache__
+
+# Operational things
+ops

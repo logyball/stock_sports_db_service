@@ -18,6 +18,8 @@ def init_setup():
                         action='store_true')
     parser.add_argument('-d', '--daily', help='run the daily script of the NASDAQ 100',
                         action='store_true')
+    parser.add_argument('-p', '--production', help='Run in full mode, e.g. send metrics to prometheus',
+                        action='store_true')
     args = parser.parse_args()
     if args.verbose:
         logging.basicConfig(

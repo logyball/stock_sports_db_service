@@ -10,9 +10,9 @@ def insert_many_rows(connection: mysql.connector.MySQLConnection, query: str, da
         cursor.executemany(query, data)
         try:
             connection.commit()
-            logging.info(f"query {query} executed successfully")
+            logging.info(f'query {query} executed successfully')
         except mysql.connector.errors.Error as e:
-            logging.fatal(f"query {query} broke: {e}")
+            logging.fatal(f'query {query} broke: {e}')
 
 
 def insert_single_row(connection: mysql.connector.MySQLConnection, query: str, data: list) -> None:
@@ -20,9 +20,9 @@ def insert_single_row(connection: mysql.connector.MySQLConnection, query: str, d
         cursor.execute(query, data)
         try:
             connection.commit()
-            logging.info(f"query {query} executed successfully")
+            logging.info(f'query {query} executed successfully')
         except mysql.connector.errors.Error as e:
-            logging.fatal(f"query {query} broke: {e}")
+            logging.fatal(f'query {query} broke: {e}')
 
 
 def get_many_rows(connection: mysql.connector.MySQLConnection, query: str) -> list[tuple]:
@@ -32,7 +32,7 @@ def get_many_rows(connection: mysql.connector.MySQLConnection, query: str) -> li
         try:
             data = [row for row in cursor.fetchall()]
         except mysql.connector.errors.Error as e:
-            logging.fatal(f"query {query} broke: {e}")
+            logging.fatal(f'query {query} broke: {e}')
     return data
 
 
@@ -48,7 +48,7 @@ def get_database_connection(verbose: bool = False) -> mysql.connector.MySQLConne
         )
         if verbose:
             c.cmd_debug()
-        logging.info(f"obtained db connection to {c.database}")
+        logging.info(f'obtained db connection to {c.database}')
         return c
     except Error as e:
-        logging.fatal(f"couldnt establish database connection: {e}")
+        logging.fatal(f'couldnt establish database connection: {e}')

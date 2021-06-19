@@ -9,6 +9,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY requirements.txt requirements.txt
 RUN $VIRTUAL_ENV/bin/pip3 install -r requirements.txt
 
-COPY ../s_bak .
+COPY . .
 
 ENTRYPOINT $VIRTUAL_ENV/bin/python3 main.py
