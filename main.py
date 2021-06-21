@@ -2,6 +2,8 @@ import sys
 import argparse
 import logging
 
+from mysql.connector import MySQLConnection
+
 from db.db_functions import get_database_connection
 from db.stock_ticker_model import load_tickers_into_db, get_stock_tickers_from_db
 from stocks.stock_prices import historical_stock_data_batch, yesterdays_stock_data_batch
@@ -11,6 +13,10 @@ from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
 
 
 def init_setup() -> tuple:
+    """
+    Collect arguments from the command line, initialize prometheus registry if applicable
+    :return: (args object, prometheus registry)
+    """
     p_reg = None
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', help='increase output verbosity',
@@ -43,56 +49,63 @@ def init_setup() -> tuple:
     return args, p_reg
 
 
+def log_gauge_to_prometheus(g: Gauge, prometheus_registry: CollectorRegistry):
+    g.set_to_current_time()
+    try:
+        push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
+                        registry=prometheus_registry)
+    except Exception as e:
+        logging.error(f'error pushing gauge {g} to prometheus.\n{e}')
+    pass
+
+
+def run_ticker_population(production: bool, prometheus_registry: CollectorRegistry, connection: MySQLConnection) -> None:
+    g = Gauge('stock_tickers_last_successful_run', 'Last the stock ticker symbols were successfully inserted into '
+                                                   'the db', registry=prometheus_registry)
+    logging.info('getting stock tickers')
+    ticker_list = get_tickers()
+    load_tickers_into_db(connection=connection, ticker_list=ticker_list)
+    logging.info('successfully finished stock ticker population')
+    if production:
+        logging.info('Logging to prometheus - successfully populated stock tickers')
+        log_gauge_to_prometheus(g=g, prometheus_registry=prometheus_registry)
+
+
+def run_back_population(production: bool, prometheus_registry: CollectorRegistry, connection: MySQLConnection) -> None:
+    g = Gauge('stock_back_population_last_successful_run',
+              'Last the stock back population job was run successfully', registry=prometheus_registry)
+    logging.info('running back population')
+    symbol_list = get_stock_tickers_from_db(connection=connection)
+    historical_stock_data_batch(connection=connection, symbol_list=symbol_list)
+    logging.info('successfully finished back population')
+    if production:
+        logging.info('Logging to prometheus - successful back population')
+        log_gauge_to_prometheus(g=g, prometheus_registry=prometheus_registry)
+
+
+def run_daily_population(production: bool, prometheus_registry: CollectorRegistry, connection: MySQLConnection) -> None:
+    g = Gauge('stock_daily_last_successful_run',
+              'Last the stock daily job was run successfully', registry=prometheus_registry)
+    logging.info('run daily population')
+    symbol_list = get_stock_tickers_from_db(connection=connection)
+    yesterdays_stock_data_batch(connection=connection, symbol_list=symbol_list)
+    logging.info('successfully finished daily population')
+    if production:
+        logging.info('Logging to prometheus - successfully populated daily batch job')
+        log_gauge_to_prometheus(g=g, prometheus_registry=prometheus_registry)
+
+
 def main():
-    args, prometheus_registry = init_setup()
-    connection = get_database_connection(verbose=True)
-    if not connection:
+    args, p_registry = init_setup()
+    conn = get_database_connection(verbose=args.verbose)
+    if not conn:
         sys.exit(1)
     if args.tickers:
-        g = Gauge('stock_tickers_last_successful_run', 'Last the stock ticker symbols were successfully inserted into '
-                                                       'the db', registry=prometheus_registry)
-        logging.info('getting stock tickers')
-        ticker_list = get_tickers()
-        load_tickers_into_db(connection=connection, ticker_list=ticker_list)
-        logging.info('successfully finished stock ticker population')
-        if args.production:
-            logging.info('Logging to prometheus - successfully populated stock tickers')
-            g.set_to_current_time()
-            try:
-                push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
-                            registry=prometheus_registry)
-            except Exception as e:
-                logging.error(f'error pushing to prometheus: {e}')
+        run_ticker_population(production=args.production, prometheus_registry=p_registry, connection=conn)
     if args.back_populate:
-        g = Gauge('stock_back_population_last_successful_run',
-                  'Last the stock back population job was run successfully', registry=prometheus_registry)
-        logging.info('running back population')
-        symbol_list = get_stock_tickers_from_db(connection=connection)
-        historical_stock_data_batch(connection=connection, symbol_list=symbol_list)
-        logging.info('successfully finished back population')
-        if args.production:
-            logging.info('Logging to prometheus - successful back population')
-            g.set_to_current_time()
-            try:
-                push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
-                            registry=prometheus_registry)
-            except Exception as e:
-                logging.error(f'error pushing to prometheus: {e}')
+        run_back_population(production=args.production, prometheus_registry=p_registry, connection=conn)
     if args.daily:
-        g = Gauge('stock_daily_last_successful_run',
-                  'Last the stock daily job was run successfully', registry=prometheus_registry)
-        logging.info('run daily population')
-        symbol_list = get_stock_tickers_from_db(connection=connection)
-        yesterdays_stock_data_batch(connection=connection, symbol_list=symbol_list)
-        logging.info('successfully finished daily population')
-        if args.production:
-            logging.info('Logging to prometheus - successfully populated daily batch job')
-            g.set_to_current_time()
-            try:
-                push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
-                            registry=prometheus_registry)
-            except Exception as e:
-                logging.error(f'error pushing to prometheus: {e}')
+        run_daily_population(production=args.production, prometheus_registry=p_registry, connection=conn)
 
 
 if __name__ == '__main__':
