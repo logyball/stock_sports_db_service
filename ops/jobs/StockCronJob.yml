@@ -1,17 +1,17 @@
-apiVersion: batch/v1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: stocks-daily-population
   namespace: stocks-sports
 spec:
-  schedule: "30 7 * * *"
+  schedule: "30 7 * * 2-6"
   jobTemplate:
     spec:
       template:
         spec:
           containers:
             - name: stocks-daily-population
-              image: loganballard/stocks-sports-jobs:0.0.4
+              image: loganballard/stocks-sports-jobs:0.0.5
               args: ["--verbose", "--daily", "--production"]
               env:
                 - name: DB_PASS

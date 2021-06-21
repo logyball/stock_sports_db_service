@@ -58,8 +58,11 @@ def main():
         if args.production:
             logging.info('Logging to prometheus - successfully populated stock tickers')
             g.set_to_current_time()
-            push_to_gateway('http://prometheus-pushgateway.monitoring:9091/', job='stocks_job',
+            try:
+                push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
                             registry=prometheus_registry)
+            except Exception as e:
+                logging.error(f'error pushing to prometheus: {e}')
     if args.back_populate:
         g = Gauge('stock_back_population_last_successful_run',
                   'Last the stock back population job was run successfully', registry=prometheus_registry)
@@ -70,8 +73,11 @@ def main():
         if args.production:
             logging.info('Logging to prometheus - successful back population')
             g.set_to_current_time()
-            push_to_gateway('http://prometheus-pushgateway.monitoring:9091/', job='stocks_job',
+            try:
+                push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
                             registry=prometheus_registry)
+            except Exception as e:
+                logging.error(f'error pushing to prometheus: {e}')
     if args.daily:
         g = Gauge('stock_daily_last_successful_run',
                   'Last the stock daily job was run successfully', registry=prometheus_registry)
@@ -82,8 +88,11 @@ def main():
         if args.production:
             logging.info('Logging to prometheus - successfully populated daily batch job')
             g.set_to_current_time()
-            push_to_gateway('http://prometheus-pushgateway.monitoring:9091/', job='stocks_job',
+            try:
+                push_to_gateway('prometheus-pushgateway.monitoring:9091', job='stocks_job',
                             registry=prometheus_registry)
+            except Exception as e:
+                logging.error(f'error pushing to prometheus: {e}')
 
 
 if __name__ == '__main__':
