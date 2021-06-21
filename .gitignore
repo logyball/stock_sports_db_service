@@ -9,6 +9,10 @@ credentials.yml
 
 # python
 __pycache__
+venv
 
 # secrets
 *.secret
+
+## real credentials
+db/users.sql

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
-  namespace: stonks
+  namespace: stocks-sports
 spec:
   selector:
     app: mysql
