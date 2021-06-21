@@ -4,3 +4,4 @@ credentials==1.1
 requests==2.25.1
 mysql-connector-python==8.0.25
 prometheus_client==0.11.0
+pytest==6.2.4
