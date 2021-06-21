@@ -50,7 +50,7 @@ def _make_av_api_get(api_function: str, symbol: str, output_size: str, interval:
         api_str_base += f'interval={interval}&'
     api_str = ''.join([api_str_base, f'outputsize={output_size}&', 'apikey=', get_alpha_vantage_key()])
     res = requests.get(api_str)
-    if res.status_code is not 200:
+    if res.status_code != 200:
         logging.error(f'error retrieving {symbol} from AV API')
         logging.error(f'response code was {res.status_code}: {res.json()}')
         return {}
