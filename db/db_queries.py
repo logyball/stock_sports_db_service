@@ -22,3 +22,15 @@ GET_STOCK_TICKERS = """
     SELECT symbol 
     FROM stocks_sports.stock_tickers;
 """
+
+
+GET_ODDS_PROVIDERS = """
+    SELECT name 
+    FROM stocks_sports.odds_providers;
+"""
+
+
+GET_SPORTS = """
+    SELECT sport_key, sport_friendly_name
+    FROM stocks_sports.sports;
+"""

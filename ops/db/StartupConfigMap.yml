@@ -5,7 +5,6 @@ metadata:
   namespace: stocks-sports
 data:
   init_db.sql: |
-    SET GLOBAL time_zone = '-7:00';
     CREATE DATABASE IF NOT EXISTS stocks_sports;
     CREATE TABLE IF NOT EXISTS stocks_sports.stock_prices (
         symbol VARCHAR(10),
