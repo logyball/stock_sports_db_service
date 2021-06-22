@@ -8,7 +8,7 @@ spec:
       spec:
         containers:
           - name: stocks-back-population
-            image: loganballard/stocks-sports-jobs:0.0.4
+            image: loganballard/stocks-sports-jobs:0.0.9
             args: ["--verbose", "--tickers", "--back-populate", "--production"]
             env:
               - name: DB_PASS

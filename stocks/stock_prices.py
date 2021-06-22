@@ -123,13 +123,16 @@ def historical_stock_data_batch(connection: mysql.connector.MySQLConnection, sym
     data = []
     i = 0
     for s in symbol_list:
-        data.extend(_get_individual_symbol_historical_data(symbol=s))
+        historical_data = _get_individual_symbol_historical_data(symbol=s)
+        if historical_data:
+            data.extend(historical_data)
         i += 1
         if i % 5 == 0:
-            insert_many_stock_prices_no_ignore(connection=connection, stock_prices=data[i - 5:])
-            logging.info(f'retrieved and inserted 5 records, sleeping for {SEARCH_SLEEP_TIME} seconds to avoid AV '
+            logging.info(f'retrieved 5 records, sleeping for {SEARCH_SLEEP_TIME} seconds to avoid AV '
                          f'rate limitation')
             sleep(SEARCH_SLEEP_TIME)
+    insert_many_stock_prices(connection=connection, stock_prices=data)
+    logging.info(f'Inserted {len(data)} records with back population')
 
 
 def yesterdays_stock_data_batch(connection: mysql.connector.MySQLConnection, symbol_list: list[str]) -> None:
@@ -145,10 +148,13 @@ def yesterdays_stock_data_batch(connection: mysql.connector.MySQLConnection, sym
     prev_date = _get_previous_market_days_date().date()
     i = 0
     for s in symbol_list:
-        data.append(_get_stock_data_individual_date(symbol=s, date=prev_date))
+        yesterdays_data = _get_stock_data_individual_date(symbol=s, date=prev_date)
+        if yesterdays_data:
+            data.append(yesterdays_data)
         i += 1
         if i % 5 == 0:
-            insert_many_stock_prices(connection=connection, stock_prices=data[i - 5:])
-            logging.info(f'retrieved and inserted 5 records, sleeping for {SEARCH_SLEEP_TIME} seconds to avoid AV '
+            logging.info(f'retrieved 5 records, sleeping for {SEARCH_SLEEP_TIME} seconds to avoid AV '
                          f'rate limitation')
             sleep(SEARCH_SLEEP_TIME)
+    insert_many_stock_prices(connection=connection, stock_prices=data)
+    logging.info(f'Inserted {len(data)} records with back population')
