@@ -58,20 +58,16 @@
       "name": "Bed Bath & Beyond"
     },
     {
+      "symbol": "BKNG",
+      "name": "Booking Holdings Inc"
+    },
+    {
       "symbol": "BIDU",
       "name": "Baidu"
     },
     {
       "symbol": "BIIB",
       "name": "Biogen Idec"
-    },
-    {
-      "symbol": "CA",
-      "name": "CA"
-    },
-    {
-      "symbol": "CELG",
-      "name": "Celgene"
     },
     {
       "symbol": "CERN",
@@ -138,10 +134,6 @@
       "name": "Equinix"
     },
     {
-      "symbol": "ESRX",
-      "name": "Express Scripts Holding Company"
-    },
-    {
       "symbol": "EXPD",
       "name": "Expeditors International of Washington"
     },
@@ -174,8 +166,8 @@
       "name": "Gilead Sciences"
     },
     {
-      "symbol": "GMCR",
-      "name": "Keurig Green Mountain"
+      "symbol": "KDP",
+      "name": "Keurig Doctor Pepper"
     },
     {
       "symbol": "GOOG",
@@ -222,18 +214,6 @@
       "name": "Liberty Global plc"
     },
     {
-      "symbol": "LINTA",
-      "name": "Liberty Interactive"
-    },
-    {
-      "symbol": "LLTC",
-      "name": "Linear Technology"
-    },
-    {
-      "symbol": "LMCA",
-      "name": "Liberty Media"
-    },
-    {
       "symbol": "MAR",
       "name": "Marriott International"
     },
@@ -262,10 +242,6 @@
       "name": "Maxim Integrated Products"
     },
     {
-      "symbol": "MYL",
-      "name": "Mylan"
-    },
-    {
       "symbol": "NFLX",
       "name": "Netflix"
     },
@@ -292,10 +268,6 @@
     {
       "symbol": "PCAR",
       "name": "PACCAR"
-    },
-    {
-      "symbol": "PCLN",
-      "name": "The Priceline Group"
     },
     {
       "symbol": "QCOM",
@@ -346,6 +318,10 @@
       "name": "Symantec"
     },
     {
+      "symbol": "T",
+      "name": "ATT"
+    },
+    {
       "symbol": "TRIP",
       "name": "TripAdvisor"
     },
@@ -362,12 +338,12 @@
       "name": "Texas Instruments"
     },
     {
-      "symbol": "VIAB",
-      "name": "Viacom"
+      "symbol": "UNH",
+      "name": "United Health Group"
     },
     {
-      "symbol": "VIP",
-      "name": "VimpelCom Ltd."
+      "symbol": "VIAB",
+      "name": "Viacom"
     },
     {
       "symbol": "VOD",

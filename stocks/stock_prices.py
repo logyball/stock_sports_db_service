@@ -127,7 +127,8 @@ def historical_stock_data_batch(connection: mysql.connector.MySQLConnection, sym
         i += 1
         if i % 5 == 0:
             insert_many_stock_prices_no_ignore(connection=connection, stock_prices=data[i - 5:])
-            logging.info('retrieved and inserted 5 records, sleeping for 120 seconds to avoid AV rate limitation')
+            logging.info(f'retrieved and inserted 5 records, sleeping for {SEARCH_SLEEP_TIME} seconds to avoid AV '
+                         f'rate limitation')
             sleep(SEARCH_SLEEP_TIME)
 
 
@@ -148,5 +149,6 @@ def yesterdays_stock_data_batch(connection: mysql.connector.MySQLConnection, sym
         i += 1
         if i % 5 == 0:
             insert_many_stock_prices(connection=connection, stock_prices=data[i - 5:])
-            logging.info('retrieved and inserted 5 records, sleeping for 120 seconds to avoid AV rate limitation')
+            logging.info(f'retrieved and inserted 5 records, sleeping for {SEARCH_SLEEP_TIME} seconds to avoid AV '
+                         f'rate limitation')
             sleep(SEARCH_SLEEP_TIME)
