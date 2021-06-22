@@ -70,6 +70,10 @@
       "name": "Biogen Idec"
     },
     {
+      "symbol": "BMY",
+      "name": "Bristol Myers Squibb"
+    },
+    {
       "symbol": "CERN",
       "name": "Cerner"
     },
@@ -98,10 +102,6 @@
       "name": "Cisco Systems"
     },
     {
-      "symbol": "CTRX",
-      "name": "Catamaran"
-    },
-    {
       "symbol": "CTSH",
       "name": "Cognizant Technology Solutions"
     },
@@ -120,10 +120,6 @@
     {
       "symbol": "DLTR",
       "name": "Dollar Tree"
-    },
-    {
-      "symbol": "DTV",
-      "name": "DIRECTV"
     },
     {
       "symbol": "EBAY",
@@ -206,7 +202,7 @@
       "name": "KLA-Tencor"
     },
     {
-      "symbol": "KRFT",
+      "symbol": "KHC",
       "name": "Kraft Foods Group"
     },
     {
@@ -290,20 +286,12 @@
       "name": "Starbucks"
     },
     {
-      "symbol": "SIAL",
-      "name": "Sigma-Aldrich"
+      "symbol": "MRK",
+      "name": "Merck"
     },
     {
       "symbol": "SIRI",
       "name": "Sirius XM Holdings"
-    },
-    {
-      "symbol": "SNDK",
-      "name": "SanDisk"
-    },
-    {
-      "symbol": "SPLS",
-      "name": "Staples"
     },
     {
       "symbol": "SRCL",
@@ -314,8 +302,8 @@
       "name": "Seagate Technology."
     },
     {
-      "symbol": "SYMC",
-      "name": "Symantec"
+      "symbol": "NLOK",
+      "name": "Norton Life Lock"
     },
     {
       "symbol": "T",
@@ -342,7 +330,7 @@
       "name": "United Health Group"
     },
     {
-      "symbol": "VIAB",
+      "symbol": "VIAC",
       "name": "Viacom"
     },
     {
@@ -362,10 +350,6 @@
       "name": "Western Digital"
     },
     {
-      "symbol": "WFM",
-      "name": "Whole Foods Market"
-    },
-    {
       "symbol": "WYNN",
       "name": "Wynn Resorts, Limited"
     },
@@ -374,8 +358,8 @@
       "name": "Xilinx"
     },
     {
-      "symbol": "YHOO",
-      "name": "Yahoo!"
+      "symbol": "VZ",
+      "name": "Verizon"
     }
   ]
 }
