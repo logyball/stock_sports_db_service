@@ -7,10 +7,11 @@ from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
 
 from db.db_functions import get_database_connection
 from db.stock_ticker_model import load_tickers_into_db, get_stock_tickers_from_db
+from db.sports_odds_model import get_list_of_sports_from_db
 from stocks.stock_prices import historical_stock_data_batch, yesterdays_stock_data_batch
 from stocks.stonk_tickers import get_tickers
 
-from odds.sports_odds import get_sports_odds
+from odds.sports_odds import create_list_of_sports
 
 
 def init_setup() -> tuple:
@@ -104,9 +105,10 @@ def run_daily_population(prometheus_registry: CollectorRegistry, connection: MyS
 
 
 def main() -> None:
-    get_sports_odds()
-    # args, p_registry = init_setup()
-    # conn = get_database_connection(verbose=args.verbose)
+    args, p_registry = init_setup()
+    conn = get_database_connection(verbose=args.verbose)
+    # create_list_of_sports(conn=conn)
+    print(get_list_of_sports_from_db(connection=conn))
     # if not conn:
     #     sys.exit(1)
     # if args.tickers:

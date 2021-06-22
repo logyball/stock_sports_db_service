@@ -18,6 +18,19 @@ INSERT_STOCK_PRICE_ROWS = """
 """
 
 
+INSERT_SPORTS = """
+    INSERT INTO stocks_sports.sports
+    (sport_key, sport_friendly_name, league_title, sport_type)
+    VALUES (%s, %s, %s, %s);
+"""
+
+
+GET_SPORTS_KEYS = """
+    SELECT sport_key 
+    FROM stocks_sports.sports;
+"""
+
+
 GET_STOCK_TICKERS = """
     SELECT symbol 
     FROM stocks_sports.stock_tickers;
