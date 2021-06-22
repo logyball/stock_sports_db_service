@@ -58,6 +58,10 @@
       "name": "Bed Bath & Beyond"
     },
     {
+      "symbol": "BKNG",
+      "name": "Booking Holdings Inc"
+    },
+    {
       "symbol": "BIDU",
       "name": "Baidu"
     },
@@ -66,12 +70,8 @@
       "name": "Biogen Idec"
     },
     {
-      "symbol": "CA",
-      "name": "CA"
-    },
-    {
-      "symbol": "CELG",
-      "name": "Celgene"
+      "symbol": "BMY",
+      "name": "Bristol Myers Squibb"
     },
     {
       "symbol": "CERN",
@@ -102,10 +102,6 @@
       "name": "Cisco Systems"
     },
     {
-      "symbol": "CTRX",
-      "name": "Catamaran"
-    },
-    {
       "symbol": "CTSH",
       "name": "Cognizant Technology Solutions"
     },
@@ -126,20 +122,12 @@
       "name": "Dollar Tree"
     },
     {
-      "symbol": "DTV",
-      "name": "DIRECTV"
-    },
-    {
       "symbol": "EBAY",
       "name": "eBay"
     },
     {
       "symbol": "EQIX",
       "name": "Equinix"
-    },
-    {
-      "symbol": "ESRX",
-      "name": "Express Scripts Holding Company"
     },
     {
       "symbol": "EXPD",
@@ -174,8 +162,8 @@
       "name": "Gilead Sciences"
     },
     {
-      "symbol": "GMCR",
-      "name": "Keurig Green Mountain"
+      "symbol": "KDP",
+      "name": "Keurig Doctor Pepper"
     },
     {
       "symbol": "GOOG",
@@ -214,24 +202,12 @@
       "name": "KLA-Tencor"
     },
     {
-      "symbol": "KRFT",
+      "symbol": "KHC",
       "name": "Kraft Foods Group"
     },
     {
       "symbol": "LBTYA",
       "name": "Liberty Global plc"
-    },
-    {
-      "symbol": "LINTA",
-      "name": "Liberty Interactive"
-    },
-    {
-      "symbol": "LLTC",
-      "name": "Linear Technology"
-    },
-    {
-      "symbol": "LMCA",
-      "name": "Liberty Media"
     },
     {
       "symbol": "MAR",
@@ -262,10 +238,6 @@
       "name": "Maxim Integrated Products"
     },
     {
-      "symbol": "MYL",
-      "name": "Mylan"
-    },
-    {
       "symbol": "NFLX",
       "name": "Netflix"
     },
@@ -294,10 +266,6 @@
       "name": "PACCAR"
     },
     {
-      "symbol": "PCLN",
-      "name": "The Priceline Group"
-    },
-    {
       "symbol": "QCOM",
       "name": "QUALCOMM"
     },
@@ -318,20 +286,12 @@
       "name": "Starbucks"
     },
     {
-      "symbol": "SIAL",
-      "name": "Sigma-Aldrich"
+      "symbol": "MRK",
+      "name": "Merck"
     },
     {
       "symbol": "SIRI",
       "name": "Sirius XM Holdings"
-    },
-    {
-      "symbol": "SNDK",
-      "name": "SanDisk"
-    },
-    {
-      "symbol": "SPLS",
-      "name": "Staples"
     },
     {
       "symbol": "SRCL",
@@ -342,8 +302,12 @@
       "name": "Seagate Technology."
     },
     {
-      "symbol": "SYMC",
-      "name": "Symantec"
+      "symbol": "NLOK",
+      "name": "Norton Life Lock"
+    },
+    {
+      "symbol": "T",
+      "name": "ATT"
     },
     {
       "symbol": "TRIP",
@@ -362,12 +326,12 @@
       "name": "Texas Instruments"
     },
     {
-      "symbol": "VIAB",
-      "name": "Viacom"
+      "symbol": "UNH",
+      "name": "United Health Group"
     },
     {
-      "symbol": "VIP",
-      "name": "VimpelCom Ltd."
+      "symbol": "VIAC",
+      "name": "Viacom"
     },
     {
       "symbol": "VOD",
@@ -386,10 +350,6 @@
       "name": "Western Digital"
     },
     {
-      "symbol": "WFM",
-      "name": "Whole Foods Market"
-    },
-    {
       "symbol": "WYNN",
       "name": "Wynn Resorts, Limited"
     },
@@ -398,8 +358,8 @@
       "name": "Xilinx"
     },
     {
-      "symbol": "YHOO",
-      "name": "Yahoo!"
+      "symbol": "VZ",
+      "name": "Verizon"
     }
   ]
 }

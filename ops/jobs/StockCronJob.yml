@@ -4,14 +4,14 @@ metadata:
   name: stocks-daily-population
   namespace: stocks-sports
 spec:
-  schedule: "30 7 * * 2-6"
+  schedule: "0 7 * * 2-6"
   jobTemplate:
     spec:
       template:
         spec:
           containers:
             - name: stocks-daily-population
-              image: loganballard/stocks-sports-jobs:0.0.5
+              image: loganballard/stocks-sports-jobs:0.0.9
               args: ["--verbose", "--daily", "--production"]
               env:
                 - name: DB_PASS
