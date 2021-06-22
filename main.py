@@ -10,6 +10,8 @@ from db.stock_ticker_model import load_tickers_into_db, get_stock_tickers_from_d
 from stocks.stock_prices import historical_stock_data_batch, yesterdays_stock_data_batch
 from stocks.stonk_tickers import get_tickers
 
+from odds.sports_odds import get_sports_odds
+
 
 def init_setup() -> tuple:
     """
@@ -102,16 +104,17 @@ def run_daily_population(prometheus_registry: CollectorRegistry, connection: MyS
 
 
 def main() -> None:
-    args, p_registry = init_setup()
-    conn = get_database_connection(verbose=args.verbose)
-    if not conn:
-        sys.exit(1)
-    if args.tickers:
-        run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    if args.back_populate:
-        run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    if args.daily:
-        run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    get_sports_odds()
+    # args, p_registry = init_setup()
+    # conn = get_database_connection(verbose=args.verbose)
+    # if not conn:
+    #     sys.exit(1)
+    # if args.tickers:
+    #     run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    # if args.back_populate:
+    #     run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    # if args.daily:
+    #     run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
 
 
 if __name__ == '__main__':

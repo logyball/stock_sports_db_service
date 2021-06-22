@@ -9,7 +9,7 @@ import requests
 from credentials.credentials import get_alpha_vantage_key
 from db.stock_prices_model import insert_many_stock_prices_no_ignore, insert_many_stock_prices
 
-AV_BASE_URL = "https://www.alphavantage.co/query?function"
+AV_BASE_URL = 'https://www.alphavantage.co/query?'
 
 
 def _get_previous_market_days_date() -> datetime:
@@ -45,11 +45,15 @@ def _make_av_api_get(api_function: str, symbol: str, output_size: str, interval:
     :param interval: (OPTIONAL) - 60min or 30min
     :return: The dictionary representation of the JSON response body
     """
-    api_str_base = f'{AV_BASE_URL}={api_function}&symbol={symbol}&'
+    api_str_base = f'{AV_BASE_URL}function={api_function}'
+    query_params = {
+        'symbol': symbol,
+        'outputsize': output_size,
+        'apikey': get_alpha_vantage_key()
+    }
     if interval:
-        api_str_base += f'interval={interval}&'
-    api_str = ''.join([api_str_base, f'outputsize={output_size}&', 'apikey=', get_alpha_vantage_key()])
-    res = requests.get(api_str)
+        query_params['interval'] = interval
+    res = requests.get(api_str_base, params=query_params)
     if res.status_code != 200:
         logging.error(f'error retrieving {symbol} from AV API')
         logging.error(f'response code was {res.status_code}: {res.json()}')
@@ -69,7 +73,7 @@ def _get_individual_symbol_historical_data(symbol: str) -> list[tuple]:
     res = _make_av_api_get(api_function='TIME_SERIES_DAILY', symbol=symbol, output_size='full')
     if not res:
         return []
-    for date_str, info in res.get("Time Series (Daily)", {}).items():
+    for date_str, info in res.get('Time Series (Daily)', {}).items():
         data_list.append((symbol, date_str, info.get('3. low'), info.get('2. high')))
     if data_list:
         logging.info(f'retrieved historical data from {symbol} -> sample: {data_list[0]}')
