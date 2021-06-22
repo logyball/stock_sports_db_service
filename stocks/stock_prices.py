@@ -1,6 +1,5 @@
 import datetime
 import logging
-import math
 from time import sleep
 
 import mysql.connector
@@ -10,6 +9,7 @@ from credentials.credentials import get_alpha_vantage_key
 from db.stock_prices_model import insert_many_stock_prices_no_ignore, insert_many_stock_prices
 
 AV_BASE_URL = "https://www.alphavantage.co/query?function"
+SEARCH_SLEEP_TIME = 150
 
 
 def _get_previous_market_days_date() -> datetime:
@@ -84,12 +84,12 @@ def _find_high_low_value(response_data: dict, prev_date: datetime.date) -> tuple
     Not to be called outside this module.
     """
     global_high = -1
-    global_low = math.inf
+    global_low = 10000000000  # outrageous price
     for dt, values in response_data.get('Time Series (60min)', {}).items():
         i_date = datetime.datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
         if i_date.date() == prev_date:
             global_high = max(global_high, float(values.get('2. high', -1)))
-            global_low = min(global_low, float(values.get('3. low', math.inf)))
+            global_low = min(global_low, float(values.get('3. low', 10000000000)))
     return global_high, global_low
 
 
@@ -128,7 +128,7 @@ def historical_stock_data_batch(connection: mysql.connector.MySQLConnection, sym
         if i % 5 == 0:
             insert_many_stock_prices_no_ignore(connection=connection, stock_prices=data[i - 5:])
             logging.info('retrieved and inserted 5 records, sleeping for 120 seconds to avoid AV rate limitation')
-            sleep(120)
+            sleep(SEARCH_SLEEP_TIME)
 
 
 def yesterdays_stock_data_batch(connection: mysql.connector.MySQLConnection, symbol_list: list[str]) -> None:
@@ -149,4 +149,4 @@ def yesterdays_stock_data_batch(connection: mysql.connector.MySQLConnection, sym
         if i % 5 == 0:
             insert_many_stock_prices(connection=connection, stock_prices=data[i - 5:])
             logging.info('retrieved and inserted 5 records, sleeping for 120 seconds to avoid AV rate limitation')
-            sleep(120)
+            sleep(SEARCH_SLEEP_TIME)
