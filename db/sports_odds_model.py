@@ -20,5 +20,3 @@ def get_list_of_sports_from_db(connection: mysql.connector.MySQLConnection) -> l
     logging.info('Getting list of sports keys')
     res = get_many_rows(connection=connection, query=select_query)
     return [i[0] for i in res]
-
-

@@ -43,3 +43,34 @@ def _get_all_odds_for_sport(sport: str, market: str) -> list:
         'oddsFormat': ODDS_FORMAT
     }
     return _make_odds_api_get_request(function='odds', params=p)
+
+
+def _insert_site_data(site: str) -> str:
+    ## TODO - insert into DB if not existsing, otherwise
+    ##        return key
+    return ''
+
+
+def insert_h2h_data(sport: str, market: str):
+    api_data = _get_all_odds_for_sport(sport=sport, market=market)
+    for odd in api_data:
+        site_count = odd.get('sites_count', 0)
+        if site_count == 0:
+            continue
+        teams = odd.get['teams', []]
+        home_team = odd.get('home_team', 'Unknown Team')
+        teams.remove(home_team)
+        away_team = teams.pop(0)
+        ## TODO - create entry for teams if not exist
+        commence_time = odd.get('commence_time', 0)
+        sites = odd.get('sites', [])
+        ## TODO - create entry for game in DB
+        for site in sites:
+            site_name = site.get('site_key', 'Unknown Odds Provider')
+            site_key = _insert_site_data(site=site_name)
+            h2h_odds = site.get('odds', {}).get('h2h', [])
+            home_h2h_odds = h2h_odds[0]
+            away_h2h_odds = h2h_odds[1]
+            ## TODO - insert into game + odds
+            pass
+        ## TODO - insert the data about the game
