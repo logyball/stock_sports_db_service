@@ -31,6 +31,28 @@ GET_SPORTS_KEYS = """
 """
 
 
+GET_SINGLE_TEAM = """
+    SELECT COUNT(*) 
+    FROM stocks_sports.sports_teams
+    WHERE team_name = %s
+    AND sport_key = %s;
+"""
+
+GET_SINGLE_TEAM_ID = """
+    SELECT id
+    FROM stocks_sports.sports_teams
+    WHERE team_name = %s
+    AND sport_key = %s;
+"""
+
+
+INSERT_SINGLE_TEAM_RETURN_ID = """
+    INSERT INTO stocks_sports.sports_teams
+    (team_name, sport_key)
+    VALUES (%s, %s);
+"""
+
+
 GET_STOCK_TICKERS = """
     SELECT symbol 
     FROM stocks_sports.stock_tickers;

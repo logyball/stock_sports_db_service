@@ -5,7 +5,7 @@ import mysql.connector
 import requests
 
 from credentials.credentials import get_odds_api_key
-from db.sports_odds_model import insert_sports
+from db.sports_odds_model import insert_sports, check_team_exists_in_db, insert_team_into_db_return_id, get_single_team_id
 
 ODDS_API_BASE_URL_V3 = 'https://api.the-odds-api.com/v3/'
 REGION = 'us'
@@ -49,6 +49,19 @@ def _insert_site_data(site: str) -> str:
     ## TODO - insert into DB if not existsing, otherwise
     ##        return key
     return ''
+
+
+def _get_team_ids(conn: mysql.connector.MySQLConnection, home_team: str, away_team: str, sport: str) -> tuple:
+    home_team_id, away_team_id = False, False
+    if not check_team_exists_in_db(connection=conn, team=home_team, sport=sport):
+        home_team_id = insert_team_into_db_return_id(connection=conn, team=home_team, sport=sport)
+    if not check_team_exists_in_db(connection=conn, team=away_team, sport=sport):
+        away_team_id = insert_team_into_db_return_id(connection=conn, team=away_team, sport=sport)
+    if not home_team_id:
+        home_team_id = get_single_team_id(connection=conn, team=home_team, sport=sport)
+    if not away_team_id:
+        away_team_id = get_single_team_id(connection=conn, team=away_team, sport=sport)
+    return home_team_id, away_team_id
 
 
 def insert_h2h_data(sport: str, market: str):
