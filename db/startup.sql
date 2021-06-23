@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS stocks_sports.odds_providers (
 
 CREATE TABLE IF NOT EXISTS stocks_sports.games (
     id INT NOT NULL AUTO_INCREMENT,
-    game_start_timestamp TIMESTAMP,
+    game_start_timestamp DATE,
     sport_key VARCHAR(100),
     home_team_id INT,
     away_team_id INT,

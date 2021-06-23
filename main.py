@@ -11,7 +11,7 @@ from db.sports_odds_model import get_list_of_sports_from_db
 from stocks.stock_prices import historical_stock_data_batch, yesterdays_stock_data_batch
 from stocks.stonk_tickers import get_tickers
 
-from odds.sports_odds import create_list_of_sports, _get_team_ids
+from odds.sports_odds import create_list_of_sports, _get_team_ids, _insert_game
 
 
 def init_setup() -> tuple:
@@ -110,6 +110,7 @@ def main() -> None:
     # create_list_of_sports(conn=conn)
     print(get_list_of_sports_from_db(connection=conn))
     print(_get_team_ids(conn=conn, home_team='asdf', away_team='asdf', sport='baseball_mlb'))
+    _insert_game(conn=conn, home_team_id=12, away_team_id=13, start_time=float('1624727401'), sport='baseball_mlb')
     # if not conn:
     #     sys.exit(1)
     # if args.tickers:

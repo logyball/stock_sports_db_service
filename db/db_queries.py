@@ -30,11 +30,28 @@ GET_SPORTS_KEYS = """
     FROM stocks_sports.sports;
 """
 
-
 GET_SINGLE_TEAM = """
     SELECT COUNT(*) 
     FROM stocks_sports.sports_teams
     WHERE team_name = %s
+    AND sport_key = %s;
+"""
+
+CHECK_SINGLE_GAME_EXISTS = """
+    SELECT COUNT(*)
+    FROM stocks_sports.games
+    WHERE home_team_id = %s
+    AND away_team_id = %s
+    AND game_start_timestamp = %s
+    AND sport_key = %s;
+"""
+
+GET_SINGLE_GAME_ID = """
+    SELECT id
+    FROM stocks_sports.games
+    WHERE home_team_id = %s
+    AND away_team_id = %s
+    AND game_start_timestamp = %s
     AND sport_key = %s;
 """
 
@@ -45,6 +62,11 @@ GET_SINGLE_TEAM_ID = """
     AND sport_key = %s;
 """
 
+INSERT_SINGLE_GAME_RETURN_ID = """
+    INSERT INTO stocks_sports.games
+    (game_start_timestamp, sport_key, home_team_id, away_team_id)
+    VALUES (%s, %s, %s, %s);
+"""
 
 INSERT_SINGLE_TEAM_RETURN_ID = """
     INSERT INTO stocks_sports.sports_teams

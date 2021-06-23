@@ -1,11 +1,13 @@
 from json import loads as json_loads
 from pprint import pprint
+from datetime import datetime
 
 import mysql.connector
 import requests
 
 from credentials.credentials import get_odds_api_key
-from db.sports_odds_model import insert_sports, check_team_exists_in_db, insert_team_into_db_return_id, get_single_team_id
+from db.sports_odds_model import insert_sports, check_team_exists_in_db, insert_team_into_db_return_id, \
+    get_single_team_id, check_game_exists_in_db, get_game_id, insert_game_into_db_return_id
 
 ODDS_API_BASE_URL_V3 = 'https://api.the-odds-api.com/v3/'
 REGION = 'us'
@@ -64,20 +66,37 @@ def _get_team_ids(conn: mysql.connector.MySQLConnection, home_team: str, away_te
     return home_team_id, away_team_id
 
 
-def insert_h2h_data(sport: str, market: str):
+def _team_insertion_wrapper(odds_info: dict, conn: mysql.connector.MySQLConnection, sport: str) -> tuple:
+    teams = odds_info.get('teams', [])
+    home_team = odds_info.get('home_team', 'Unknown Team')
+    teams.remove(home_team)
+    away_team = teams.pop(0)
+    return _get_team_ids(conn=conn, home_team=home_team, away_team=away_team, sport=sport)
+
+
+def _insert_game(conn: mysql.connector.MySQLConnection, home_team_id: int, away_team_id: int, start_time: float, sport: str) -> int:
+    start_datetime = datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')
+    game_dict = {
+        'home_team_id': home_team_id,
+        'away_team_id': away_team_id,
+        'start_time': start_datetime,
+        'sport_key': sport
+    }
+    if check_game_exists_in_db(connection=conn, game_info=game_dict):
+        return get_game_id(connection=conn, game_info=game_dict)
+    return insert_game_into_db_return_id(connection=conn, game_info=game_dict)
+
+
+def insert_h2h_data(conn: mysql.connector.MySQLConnection, sport: str, market: str):
     api_data = _get_all_odds_for_sport(sport=sport, market=market)
     for odd in api_data:
         site_count = odd.get('sites_count', 0)
         if site_count == 0:
             continue
-        teams = odd.get['teams', []]
-        home_team = odd.get('home_team', 'Unknown Team')
-        teams.remove(home_team)
-        away_team = teams.pop(0)
-        ## TODO - create entry for teams if not exist
+        home_team_id, away_team_id = _team_insertion_wrapper(odds_info=odd, conn=conn, sport=sport)
         commence_time = odd.get('commence_time', 0)
-        sites = odd.get('sites', [])
         ## TODO - create entry for game in DB
+        sites = odd.get('sites', [])
         for site in sites:
             site_name = site.get('site_key', 'Unknown Odds Provider')
             site_key = _insert_site_data(site=site_name)
