@@ -7,11 +7,14 @@ from prometheus_client import CollectorRegistry, Gauge, push_to_gateway
 
 from db.db_functions import get_database_connection
 from db.stock_ticker_model import load_tickers_into_db, get_stock_tickers_from_db
-from db.sports_odds_model import get_list_of_sports_from_db
 from stocks.stock_prices import historical_stock_data_batch, yesterdays_stock_data_batch
 from stocks.stonk_tickers import get_tickers
 
-from odds.sports_odds import create_list_of_sports, _get_team_ids, _insert_game
+from odds.sports_odds import create_list_of_sports, insert_h2h_data
+
+
+SPORTS_I_CARE_ABOUT = {'basketball_nba', 'baseball_mlb', 'americanfootball_nfl', 'americanfootball_ncaaf',
+                       'mma_mixed_martial_arts', 'soccer_usa_mls'}
 
 
 def init_setup() -> tuple:
@@ -28,6 +31,8 @@ def init_setup() -> tuple:
     parser.add_argument('-b', '--back-populate', help='run the back-population script',
                         action='store_true')
     parser.add_argument('-d', '--daily', help='run the daily script of the NASDAQ 100',
+                        action='store_true')
+    parser.add_argument('-s', '--sports', help='run the daily script of adding the sports odds',
                         action='store_true')
     parser.add_argument('-p', '--production', help='Run in full mode, e.g. send metrics to prometheus',
                         action='store_true')
@@ -104,21 +109,35 @@ def run_daily_population(prometheus_registry: CollectorRegistry, connection: MyS
         log_gauge_to_prometheus(prom_gauge=gauge, prometheus_registry=prometheus_registry)
 
 
+def run_daily_sports_population(prod: bool, prometheus_registry: CollectorRegistry, connection: MySQLConnection):
+    """Wrapper to populate the DB with daily stock data"""
+    gauge = Gauge('h2h_sports_last_successful_run',
+              'Last time the daily h2h odds was run successfully', registry=prometheus_registry)
+    sports_list = create_list_of_sports(conn=connection)
+    for sport in sports_list:
+        sport_key = sport[0]
+        if sport_key not in SPORTS_I_CARE_ABOUT:
+            continue
+        logging.info(f'Inserting h2h odds for: {sport_key}')
+        insert_h2h_data(conn=connection, sport=sport_key)
+    if prod:
+        logging.info('Logging to prometheus - successfully populated daily h2h odds batch job')
+        log_gauge_to_prometheus(prom_gauge=gauge, prometheus_registry=prometheus_registry)
+
+
 def main() -> None:
     args, p_registry = init_setup()
     conn = get_database_connection(verbose=args.verbose)
-    # create_list_of_sports(conn=conn)
-    print(get_list_of_sports_from_db(connection=conn))
-    print(_get_team_ids(conn=conn, home_team='asdf', away_team='asdf', sport='baseball_mlb'))
-    _insert_game(conn=conn, home_team_id=12, away_team_id=13, start_time=float('1624727401'), sport='baseball_mlb')
-    # if not conn:
-    #     sys.exit(1)
-    # if args.tickers:
-    #     run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    # if args.back_populate:
-    #     run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    # if args.daily:
-    #     run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if not conn:
+        sys.exit(1)
+    if args.tickers:
+        run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.back_populate:
+        run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.daily:
+        run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.sports:
+        run_daily_sports_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
 
 
 if __name__ == '__main__':

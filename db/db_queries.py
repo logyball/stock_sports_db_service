@@ -19,7 +19,7 @@ INSERT_STOCK_PRICE_ROWS = """
 
 
 INSERT_SPORTS = """
-    INSERT INTO stocks_sports.sports
+    INSERT IGNORE INTO stocks_sports.sports
     (sport_key, sport_friendly_name, league_title, sport_type)
     VALUES (%s, %s, %s, %s);
 """
@@ -90,4 +90,32 @@ GET_ODDS_PROVIDERS = """
 GET_SPORTS = """
     SELECT sport_key, sport_friendly_name
     FROM stocks_sports.sports;
+"""
+
+
+CHECK_SITE_EXISTS = """
+    SELECT COUNT(*)
+    FROM stocks_sports.odds_providers
+    WHERE name = %s;
+"""
+
+
+GET_SINGLE_SITE_ID = """
+    SELECT id
+    FROM stocks_sports.odds_providers
+    WHERE name = %s;
+"""
+
+
+INSERT_SITE_RETURN_ID = """
+    INSERT INTO stocks_sports.odds_providers
+    (name, friendly_name)
+    VALUES (%s, %s);
+"""
+
+
+INSERT_H2H_ODDS_ROW_RETURN_ID = """
+    INSERT INTO stocks_sports.h2h_odds
+    (game_id, time_collected, odds_provider_id, home_odds, away_odds)
+    VALUES (%s, %s, %s, %s, %s);
 """
