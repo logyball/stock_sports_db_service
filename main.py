@@ -28,7 +28,7 @@ def init_setup() -> tuple:
                         action='store_true')
     parser.add_argument('-t', '--tickers', help='insert stock tickers',
                         action='store_true')
-    parser.add_argument('-b', '--back-populate', help='run the back-population script',
+    parser.add_argument('-b', '--back-populate', help='run the back-population script for historical stock data',
                         action='store_true')
     parser.add_argument('-d', '--daily', help='run the daily script of the NASDAQ 100',
                         action='store_true')
