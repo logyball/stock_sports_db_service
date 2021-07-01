@@ -120,6 +120,11 @@ def run_daily_sports_population(prod: bool, prometheus_registry: CollectorRegist
             continue
         logging.info(f'Inserting h2h odds for: {sport_key}')
         insert_h2h_data(conn=connection, sport=sport_key)
+        logging.info(f'Inserting totals odds for: {sport_key}')
+        insert_totals_data(conn=connection, sport=sport_key)
+        if 'mma' not in sport_key:
+            logging.info(f'Inserting spreads odds for: {sport_key}')
+            insert_spreads_data(conn=connection, sport=sport_key)
     if prod:
         logging.info('Logging to prometheus - successfully populated daily h2h odds batch job')
         log_gauge_to_prometheus(prom_gauge=gauge, prometheus_registry=prometheus_registry)
@@ -130,16 +135,14 @@ def main() -> None:
     conn = get_database_connection(verbose=args.verbose)
     if not conn:
         sys.exit(1)
-    # insert_totals_data(conn=conn, sport='baseball_mlb')
-    insert_totals_data(conn=conn, sport='baseball_mlb')
-    # if args.tickers:
-    #     run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    # if args.back_populate:
-    #     run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    # if args.daily:
-    #     run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    # if args.sports:
-    #     run_daily_sports_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.tickers:
+        run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.back_populate:
+        run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.daily:
+        run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    if args.sports:
+        run_daily_sports_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
 
 
 if __name__ == '__main__':

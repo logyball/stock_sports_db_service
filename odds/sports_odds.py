@@ -1,5 +1,4 @@
 from json import loads as json_loads
-from pprint import pprint
 from datetime import datetime
 
 import mysql.connector
@@ -8,7 +7,7 @@ import requests
 from credentials.credentials import get_odds_api_key
 from db.sports_odds_model import insert_sports, check_team_exists_in_db, insert_team_into_db_return_id, \
     get_single_team_id, check_game_exists_in_db, get_game_id, insert_game_into_db_return_id, check_site_exists_in_db, \
-    get_site_id, insert_site_into_db_return_id, insert_h2h_odds, insert_totals_odds
+    get_site_id, insert_site_into_db_return_id, insert_h2h_odds, insert_totals_odds, insert_spread_odds
 
 ODDS_API_BASE_URL_V3 = 'https://api.the-odds-api.com/v3/'
 REGION = 'us'
@@ -106,6 +105,13 @@ def _insert_individual_totals_odds_data(conn: mysql.connector.MySQLConnection, g
     return odds_id
 
 
+def _insert_individual_spread_odds_data(conn: mysql.connector.MySQLConnection, game_id: int, site_id: int, home_spread: float, away_spread: float, home_odds: int, away_odds: int) -> int:
+    collected_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    data = (game_id, collected_datetime, site_id, home_spread, away_spread, home_odds, away_odds)
+    odds_id = insert_spread_odds(connection=conn, data=data)
+    return odds_id
+
+
 def insert_h2h_data(conn: mysql.connector.MySQLConnection, sport: str):
     api_data = _get_all_odds_for_sport(sport=sport, market='h2h')
     for odd in api_data:
@@ -129,7 +135,6 @@ def insert_h2h_data(conn: mysql.connector.MySQLConnection, sport: str):
 
 def insert_totals_data(conn: mysql.connector.MySQLConnection, sport: str):
     api_data = _get_all_odds_for_sport(sport=sport, market='totals')
-    print(api_data)
     for odd in api_data:
         site_count = odd.get('sites_count', 0)
         if site_count == 0:
@@ -155,22 +160,22 @@ def insert_totals_data(conn: mysql.connector.MySQLConnection, sport: str):
 
 def insert_spreads_data(conn: mysql.connector.MySQLConnection, sport: str):
     api_data = _get_all_odds_for_sport(sport=sport, market='spreads')
-    print(api_data)
     for odd in api_data:
         site_count = odd.get('sites_count', 0)
         if site_count == 0:
             continue
-        # pprint(odd)
-        # home_team_id, away_team_id = _team_insertion_wrapper(odds_info=odd, conn=conn, sport=sport)
-        # commence_time = float(odd.get('commence_time', 0))
-        # game_id = _insert_game(conn=conn, home_team_id=home_team_id, away_team_id=away_team_id,
-        #                        start_time=commence_time, sport=sport)
-        # sites = odd.get('sites', [])
-        # for site in sites:
-        #     site_name = site.get('site_key', 'Unknown Odds Provider')
-        #     site_friendly_name = site.get('site_nice', 'Unknown Odds Provider friendly name')
-        #     site_id = _insert_site_data(conn=conn, site=site_name, friendly_name=site_friendly_name)
-        #     h2h_odds = site.get('odds', {}).get('h2h', [])
-        #     home_h2h_odds = h2h_odds[0]
-        #     away_h2h_odds = h2h_odds[1]
-        #     _insert_individual_h2h_odds_data(conn=conn, game_id=game_id, site_id=site_id, home_odds=home_h2h_odds, away_odds=away_h2h_odds)
+        home_team_id, away_team_id = _team_insertion_wrapper(odds_info=odd, conn=conn, sport=sport)
+        commence_time = float(odd.get('commence_time', 0))
+        game_id = _insert_game(conn=conn, home_team_id=home_team_id, away_team_id=away_team_id,
+                               start_time=commence_time, sport=sport)
+        sites = odd.get('sites', [])
+        for site in sites:
+            site_name = site.get('site_key', 'Unknown Odds Provider')
+            site_friendly_name = site.get('site_nice', 'Unknown Odds Provider friendly name')
+            site_id = _insert_site_data(conn=conn, site=site_name, friendly_name=site_friendly_name)
+            spread_odds = site.get('odds', {}).get('spreads', {})
+            home_spread = spread_odds.get('points')[0]
+            away_spread = spread_odds.get('points')[1]
+            home_odds = spread_odds.get('odds')[0]
+            away_odds = spread_odds.get('odds')[1]
+            _insert_individual_spread_odds_data(conn=conn, game_id=game_id, site_id=site_id, home_spread=home_spread, away_spread=away_spread, home_odds=home_odds, away_odds=away_odds)
