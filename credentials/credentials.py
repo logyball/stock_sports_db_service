@@ -4,15 +4,31 @@ from yaml import load, Loader
 from os import environ
 
 
+def _get_key_helper(key: str, env_var: str) -> str:
+    if environ.get('LOCAL', False):
+        key = load(open('credentials/credentials.yml', 'r'), Loader=Loader).get(key, False)
+    else:
+        key = environ.get(env_var, False)
+    return key
+
+
+def get_odds_api_key() -> str:
+    """
+    Return the-Odds-API api Key.  Set LOCAL=true in the environment variables to use credentials.yml.  Otherwise,
+    reads the credentials from ODDS_API_KEY environment var.
+    """
+    key = _get_key_helper(key='the_odds_api', env_var='ODDS_API_KEY')
+    if not key:
+        raise LookupError("couldn't find the odds api key")
+    return key
+
+
 def get_alpha_vantage_key() -> str:
     """
     Return the AV API Key.  Set LOCAL=true in the environment variables to use credentials.yml.  Otherwise,
     reads the credentials from ALPHA_VANTAGE_API_KEY environment var.
     """
-    if environ.get('LOCAL', False):
-        key = load(open('credentials/credentials.yml', 'r'), Loader=Loader).get('alpha_vantage', False)
-    else:
-        key = environ.get('ALPHA_VANTAGE_API_KEY', False)
+    key = _get_key_helper(key='alpha_vantage', env_var='ALPHA_VANTAGE_API_KEY')
     if not key:
         raise LookupError("couldn't find alpha vantage key")
     return key
