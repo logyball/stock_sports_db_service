@@ -131,7 +131,7 @@ def main() -> None:
     if not conn:
         sys.exit(1)
     # insert_totals_data(conn=conn, sport='baseball_mlb')
-    insert_spreads_data(conn=conn, sport='baseball_mlb')
+    insert_totals_data(conn=conn, sport='baseball_mlb')
     # if args.tickers:
     #     run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
     # if args.back_populate:

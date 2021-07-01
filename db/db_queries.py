@@ -119,3 +119,10 @@ INSERT_H2H_ODDS_ROW_RETURN_ID = """
     (game_id, time_collected, odds_provider_id, home_odds, away_odds)
     VALUES (%s, %s, %s, %s, %s);
 """
+
+
+INSERT_TOTALS_ODDS_ROW_RETURN_ID = """
+    INSERT INTO stocks_sports.over_under_odds
+    (game_id, time_collected, odds_provider_id, over_under, over_odds, under_odds)
+    VALUES (%s, %s, %s, %s, %s, %s);
+"""

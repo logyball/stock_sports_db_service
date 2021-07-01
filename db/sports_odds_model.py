@@ -1,7 +1,7 @@
 import mysql.connector
 from db.db_queries import INSERT_SPORTS, GET_SPORTS_KEYS, GET_SINGLE_TEAM, INSERT_SINGLE_TEAM_RETURN_ID,\
     GET_SINGLE_TEAM_ID, CHECK_SINGLE_GAME_EXISTS, GET_SINGLE_GAME_ID, INSERT_SINGLE_GAME_RETURN_ID, CHECK_SITE_EXISTS, \
-    GET_SINGLE_SITE_ID, INSERT_SITE_RETURN_ID, INSERT_H2H_ODDS_ROW_RETURN_ID
+    GET_SINGLE_SITE_ID, INSERT_SITE_RETURN_ID, INSERT_H2H_ODDS_ROW_RETURN_ID, INSERT_TOTALS_ODDS_ROW_RETURN_ID
 from db.db_functions import insert_many_rows, get_many_rows, get_count, insert_single_row_return_id, get_single_row
 
 import logging
@@ -98,6 +98,13 @@ def check_site_exists_in_db(connection: mysql.connector.MySQLConnection, site_na
 
 def insert_h2h_odds(connection: mysql.connector.MySQLConnection, data: tuple) -> int:
     insert_query = INSERT_H2H_ODDS_ROW_RETURN_ID
-    logging.info(f'Inserting odds for game {data[0]}: {data[3]}, {data[4]}')
+    logging.info(f'Inserting h2h odds for game {data[0]}: {data[3]}, {data[4]}')
+    row_id = insert_single_row_return_id(connection=connection, query=insert_query, data=data)
+    return row_id  ## TODO - error and -1 handling here
+
+
+def insert_totals_odds(connection: mysql.connector.MySQLConnection, data: tuple) -> int:
+    insert_query = INSERT_TOTALS_ODDS_ROW_RETURN_ID
+    logging.info(f'Inserting totals odds for game {data[0]}: {data[3]}, {data[4]}, {data[5]}')
     row_id = insert_single_row_return_id(connection=connection, query=insert_query, data=data)
     return row_id  ## TODO - error and -1 handling here

@@ -82,12 +82,12 @@ CREATE TABLE IF NOT EXISTS stocks_sports.over_under_odds (
     game_id INT,
     time_collected TIMESTAMP,
     odds_provider_id INT,
-    over_under INT,
+    over_under DECIMAL (20, 3),
     over_odds INT,
     under_odds INT,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (game_id) REFERENCES stocks_sports.sports_teams(id),
+    FOREIGN KEY (game_id) REFERENCES stocks_sports.games(id),
     FOREIGN KEY (odds_provider_id) REFERENCES stocks_sports.odds_providers(id)
 );
 
@@ -97,13 +97,13 @@ CREATE TABLE IF NOT EXISTS stocks_sports.spread_odds (
     game_id INT,
     time_collected TIMESTAMP,
     odds_provider_id INT,
-    home_spread INT,
-    away_spread INT,
+    home_spread DECIMAL (20, 3),
+    away_spread DECIMAL (20, 3),
     home_odds INT,
     away_odds INT,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (game_id) REFERENCES stocks_sports.sports_teams(id),
+    FOREIGN KEY (game_id) REFERENCES stocks_sports.games(id),
     FOREIGN KEY (odds_provider_id) REFERENCES stocks_sports.odds_providers(id)
 );
 
