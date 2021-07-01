@@ -118,3 +118,49 @@ def insert_h2h_data(conn: mysql.connector.MySQLConnection, sport: str):
             home_h2h_odds = h2h_odds[0]
             away_h2h_odds = h2h_odds[1]
             _insert_individual_h2h_odds_data(conn=conn, game_id=game_id, site_id=site_id, home_odds=home_h2h_odds, away_odds=away_h2h_odds)
+
+
+def insert_totals_data(conn: mysql.connector.MySQLConnection, sport: str):
+    api_data = _get_all_odds_for_sport(sport=sport, market='totals')
+    print(api_data)
+    for odd in api_data:
+        site_count = odd.get('sites_count', 0)
+        if site_count == 0:
+            continue
+        # pprint(odd)
+        # home_team_id, away_team_id = _team_insertion_wrapper(odds_info=odd, conn=conn, sport=sport)
+        # commence_time = float(odd.get('commence_time', 0))
+        # game_id = _insert_game(conn=conn, home_team_id=home_team_id, away_team_id=away_team_id,
+        #                        start_time=commence_time, sport=sport)
+        # sites = odd.get('sites', [])
+        # for site in sites:
+        #     site_name = site.get('site_key', 'Unknown Odds Provider')
+        #     site_friendly_name = site.get('site_nice', 'Unknown Odds Provider friendly name')
+        #     site_id = _insert_site_data(conn=conn, site=site_name, friendly_name=site_friendly_name)
+        #     h2h_odds = site.get('odds', {}).get('h2h', [])
+        #     home_h2h_odds = h2h_odds[0]
+        #     away_h2h_odds = h2h_odds[1]
+        #     _insert_individual_h2h_odds_data(conn=conn, game_id=game_id, site_id=site_id, home_odds=home_h2h_odds, away_odds=away_h2h_odds)
+
+
+def insert_spreads_data(conn: mysql.connector.MySQLConnection, sport: str):
+    api_data = _get_all_odds_for_sport(sport=sport, market='spreads')
+    print(api_data)
+    for odd in api_data:
+        site_count = odd.get('sites_count', 0)
+        if site_count == 0:
+            continue
+        # pprint(odd)
+        # home_team_id, away_team_id = _team_insertion_wrapper(odds_info=odd, conn=conn, sport=sport)
+        # commence_time = float(odd.get('commence_time', 0))
+        # game_id = _insert_game(conn=conn, home_team_id=home_team_id, away_team_id=away_team_id,
+        #                        start_time=commence_time, sport=sport)
+        # sites = odd.get('sites', [])
+        # for site in sites:
+        #     site_name = site.get('site_key', 'Unknown Odds Provider')
+        #     site_friendly_name = site.get('site_nice', 'Unknown Odds Provider friendly name')
+        #     site_id = _insert_site_data(conn=conn, site=site_name, friendly_name=site_friendly_name)
+        #     h2h_odds = site.get('odds', {}).get('h2h', [])
+        #     home_h2h_odds = h2h_odds[0]
+        #     away_h2h_odds = h2h_odds[1]
+        #     _insert_individual_h2h_odds_data(conn=conn, game_id=game_id, site_id=site_id, home_odds=home_h2h_odds, away_odds=away_h2h_odds)

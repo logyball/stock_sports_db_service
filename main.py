@@ -10,7 +10,7 @@ from db.stock_ticker_model import load_tickers_into_db, get_stock_tickers_from_d
 from stocks.stock_prices import historical_stock_data_batch, yesterdays_stock_data_batch
 from stocks.stonk_tickers import get_tickers
 
-from odds.sports_odds import create_list_of_sports, insert_h2h_data
+from odds.sports_odds import create_list_of_sports, insert_h2h_data, insert_totals_data, insert_spreads_data
 
 
 SPORTS_I_CARE_ABOUT = {'basketball_nba', 'baseball_mlb', 'americanfootball_nfl', 'americanfootball_ncaaf',
@@ -110,7 +110,7 @@ def run_daily_population(prometheus_registry: CollectorRegistry, connection: MyS
 
 
 def run_daily_sports_population(prod: bool, prometheus_registry: CollectorRegistry, connection: MySQLConnection):
-    """Wrapper to populate the DB with daily stock data"""
+    """Wrapper to populate the DB with daily sports data"""
     gauge = Gauge('h2h_sports_last_successful_run',
               'Last time the daily h2h odds was run successfully', registry=prometheus_registry)
     sports_list = create_list_of_sports(conn=connection)
@@ -130,14 +130,16 @@ def main() -> None:
     conn = get_database_connection(verbose=args.verbose)
     if not conn:
         sys.exit(1)
-    if args.tickers:
-        run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    if args.back_populate:
-        run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    if args.daily:
-        run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
-    if args.sports:
-        run_daily_sports_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    # insert_totals_data(conn=conn, sport='baseball_mlb')
+    insert_spreads_data(conn=conn, sport='baseball_mlb')
+    # if args.tickers:
+    #     run_ticker_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    # if args.back_populate:
+    #     run_back_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    # if args.daily:
+    #     run_daily_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
+    # if args.sports:
+    #     run_daily_sports_population(prod=args.production, prometheus_registry=p_registry, connection=conn)
 
 
 if __name__ == '__main__':
