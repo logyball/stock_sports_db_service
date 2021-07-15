@@ -13,8 +13,13 @@ from stocks.stonk_tickers import get_tickers
 from odds.sports_odds import create_list_of_sports, insert_h2h_data, insert_totals_data, insert_spreads_data
 
 
-SPORTS_I_CARE_ABOUT = {'basketball_nba', 'baseball_mlb', 'americanfootball_nfl', 'americanfootball_ncaaf',
-                       'mma_mixed_martial_arts', 'soccer_usa_mls'}
+SPORTS_I_CARE_ABOUT = {'basketball_nba',
+                       'baseball_mlb',
+                       'americanfootball_nfl',
+                       # 'americanfootball_ncaaf', -- TODO - can't gamble on :/
+                       # 'mma_mixed_martial_arts', -- TODO - can't get results :/
+                       # 'soccer_usa_mls'  -- TODO - have to like soccer first :/
+                       }
 
 
 def init_setup() -> tuple:
@@ -111,8 +116,8 @@ def run_daily_population(prometheus_registry: CollectorRegistry, connection: MyS
 
 def run_daily_sports_population(prod: bool, prometheus_registry: CollectorRegistry, connection: MySQLConnection):
     """Wrapper to populate the DB with daily sports data"""
-    gauge = Gauge('h2h_sports_last_successful_run',
-              'Last time the daily h2h odds was run successfully', registry=prometheus_registry)
+    gauge = Gauge('sports_last_successful_run',
+              'Last time the daily sports job was run successfully', registry=prometheus_registry)
     sports_list = create_list_of_sports(conn=connection)
     for sport in sports_list:
         sport_key = sport[0]
